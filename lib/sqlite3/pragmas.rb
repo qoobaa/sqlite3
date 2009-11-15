@@ -10,53 +10,54 @@ module SQLite3
   module Pragmas
 
     # Returns +true+ or +false+ depending on the value of the named pragma.
-    def get_boolean_pragma( name )
-      get_first_value( "PRAGMA #{name}" ) != "0"
+    def get_boolean_pragma(name)
+      get_first_value("PRAGMA #{name}") != "0"
     end
     private :get_boolean_pragma
 
     # Sets the given pragma to the given boolean value. The value itself
     # may be +true+ or +false+, or any other commonly used string or
     # integer that represents truth.
-    def set_boolean_pragma( name, mode )
+    def set_boolean_pragma(name, mode)
       case mode
-        when String
-          case mode.downcase
-            when "on", "yes", "true", "y", "t"; mode = "'ON'"
-            when "off", "no", "false", "n", "f"; mode = "'OFF'"
-            else
-              raise Exception,
-                "unrecognized pragma parameter #{mode.inspect}"
-          end
-        when true, 1
-          mode = "ON"
-        when false, 0, nil
-          mode = "OFF"
+      when String
+        case mode.downcase
+        when "on", "yes", "true", "y", "t"
+          mode = "'ON'"
+        when "off", "no", "false", "n", "f"
+          mode = "'OFF'"
         else
-          raise Exception,
-            "unrecognized pragma parameter #{mode.inspect}"
+          raise Exception, "unrecognized pragma parameter #{mode.inspect}"
+        end
+      when true, 1
+        mode = "ON"
+      when false, 0, nil
+        mode = "OFF"
+      else
+        raise Exception,
+        "unrecognized pragma parameter #{mode.inspect}"
       end
 
-      execute( "PRAGMA #{name}=#{mode}" )
+      execute("PRAGMA #{name}=#{mode}")
     end
     private :set_boolean_pragma
 
     # Requests the given pragma (and parameters), and if the block is given,
     # each row of the result set will be yielded to it. Otherwise, the results
     # are returned as an array.
-    def get_query_pragma( name, *parms, &block ) # :yields: row
+    def get_query_pragma(name, *parms, &block) # :yields: row
       if parms.empty?
-        execute( "PRAGMA #{name}", &block )
+        execute("PRAGMA #{name}", &block)
       else
         args = "'" + parms.join("','") + "'"
-        execute( "PRAGMA #{name}( #{args} )", &block )
+        execute("PRAGMA #{name}(#{args})", &block)
       end
     end
     private :get_query_pragma
 
     # Return the value of the given pragma.
-    def get_enum_pragma( name )
-      get_first_value( "PRAGMA #{name}" )
+    def get_enum_pragma(name)
+      get_first_value("PRAGMA #{name}")
     end
     private :get_enum_pragma
 
@@ -65,24 +66,24 @@ module SQLite3
     # the array is another array comprised of elements in the enumeration that
     # have duplicate values. See #synchronous, #default_synchronous,
     # #temp_store, and #default_temp_store for usage examples.
-    def set_enum_pragma( name, mode, enums )
+    def set_enum_pragma(name, mode, enums)
       match = enums.find { |p| p.find { |i| i.to_s.downcase == mode.to_s.downcase } }
       raise Exception,
-        "unrecognized #{name} #{mode.inspect}" unless match
-      execute( "PRAGMA #{name}='#{match.first.upcase}'" )
+      "unrecognized #{name} #{mode.inspect}" unless match
+      execute("PRAGMA #{name}='#{match.first.upcase}'")
     end
     private :set_enum_pragma
 
     # Returns the value of the given pragma as an integer.
-    def get_int_pragma( name )
-      get_first_value( "PRAGMA #{name}" ).to_i
+    def get_int_pragma(name)
+      get_first_value("PRAGMA #{name}").to_i
     end
     private :get_int_pragma
 
     # Set the value of the given pragma to the integer value of the +value+
     # parameter.
-    def set_int_pragma( name, value )
-      execute( "PRAGMA #{name}=#{value.to_i}" )
+    def set_int_pragma(name, value)
+      execute("PRAGMA #{name}=#{value.to_i}")
     end
     private :set_int_pragma
 
@@ -96,7 +97,7 @@ module SQLite3
     # SQLite3::Exception will be raised. Otherwise it
     # returns silently.
     def integrity_check
-      execute( "PRAGMA integrity_check" ) do |row|
+      execute("PRAGMA integrity_check") do |row|
         raise Exception, row[0] if row[0] != "ok"
       end
     end
@@ -105,7 +106,7 @@ module SQLite3
       get_boolean_pragma "auto_vacuum"
     end
 
-    def auto_vacuum=( mode )
+    def auto_vacuum=(mode)
       set_boolean_pragma "auto_vacuum", mode
     end
 
@@ -113,7 +114,7 @@ module SQLite3
       get_int_pragma "schema_cookie"
     end
 
-    def schema_cookie=( cookie )
+    def schema_cookie=(cookie)
       set_int_pragma "schema_cookie", cookie
     end
 
@@ -121,7 +122,7 @@ module SQLite3
       get_int_pragma "user_cookie"
     end
 
-    def user_cookie=( cookie )
+    def user_cookie=(cookie)
       set_int_pragma "user_cookie", cookie
     end
 
@@ -129,7 +130,7 @@ module SQLite3
       get_int_pragma "cache_size"
     end
 
-    def cache_size=( size )
+    def cache_size=(size)
       set_int_pragma "cache_size", size
     end
 
@@ -137,7 +138,7 @@ module SQLite3
       get_int_pragma "default_cache_size"
     end
 
-    def default_cache_size=( size )
+    def default_cache_size=(size)
       set_int_pragma "default_cache_size", size
     end
 
@@ -145,7 +146,7 @@ module SQLite3
       get_enum_pragma "default_synchronous"
     end
 
-    def default_synchronous=( mode )
+    def default_synchronous=(mode)
       set_enum_pragma "default_synchronous", mode, SYNCHRONOUS_MODES
     end
 
@@ -153,7 +154,7 @@ module SQLite3
       get_enum_pragma "synchronous"
     end
 
-    def synchronous=( mode )
+    def synchronous=(mode)
       set_enum_pragma "synchronous", mode, SYNCHRONOUS_MODES
     end
 
@@ -161,15 +162,15 @@ module SQLite3
       get_enum_pragma "default_temp_store"
     end
 
-    def default_temp_store=( mode )
+    def default_temp_store=(mode)
       set_enum_pragma "default_temp_store", mode, TEMP_STORE_MODES
     end
-  
+
     def temp_store
       get_enum_pragma "temp_store"
     end
 
-    def temp_store=( mode )
+    def temp_store=(mode)
       set_enum_pragma "temp_store", mode, TEMP_STORE_MODES
     end
 
@@ -177,43 +178,43 @@ module SQLite3
       get_boolean_pragma "full_column_names"
     end
 
-    def full_column_names=( mode )
+    def full_column_names=(mode)
       set_boolean_pragma "full_column_names", mode
     end
-  
+
     def parser_trace
       get_boolean_pragma "parser_trace"
     end
 
-    def parser_trace=( mode )
+    def parser_trace=(mode)
       set_boolean_pragma "parser_trace", mode
     end
-  
+
     def vdbe_trace
       get_boolean_pragma "vdbe_trace"
     end
 
-    def vdbe_trace=( mode )
+    def vdbe_trace=(mode)
       set_boolean_pragma "vdbe_trace", mode
     end
 
-    def database_list( &block ) # :yields: row
+    def database_list(&block) # :yields: row
       get_query_pragma "database_list", &block
     end
 
-    def foreign_key_list( table, &block ) # :yields: row
+    def foreign_key_list(table, &block) # :yields: row
       get_query_pragma "foreign_key_list", table, &block
     end
 
-    def index_info( index, &block ) # :yields: row
+    def index_info(index, &block) # :yields: row
       get_query_pragma "index_info", index, &block
     end
 
-    def index_list( table, &block ) # :yields: row
+    def index_list(table, &block) # :yields: row
       get_query_pragma "index_list", table, &block
     end
 
-    def table_info( table, &block ) # :yields: row
+    def table_info(table, &block) # :yields: row
       columns, *rows = execute2("PRAGMA table_info(#{table})")
 
       needs_tweak_default = version_compare(driver.libversion, "3.3.7") > 0
@@ -239,33 +240,33 @@ module SQLite3
 
     private
 
-      # Compares two version strings
-      def version_compare(v1, v2)
-        v1 = v1.split(".").map { |i| i.to_i }
-        v2 = v2.split(".").map { |i| i.to_i }
-        parts = [v1.length, v2.length].max
-        v1.push 0 while v1.length < parts
-        v2.push 0 while v2.length < parts
-        v1.zip(v2).each do |a,b|
-          return -1 if a < b
-          return  1 if a > b
-        end
-        return 0
+    # Compares two version strings
+    def version_compare(v1, v2)
+      v1 = v1.split(".").map { |i| i.to_i }
+      v2 = v2.split(".").map { |i| i.to_i }
+      parts = [v1.length, v2.length].max
+      v1.push 0 while v1.length < parts
+      v2.push 0 while v2.length < parts
+      v1.zip(v2).each do |a,b|
+        return -1 if a < b
+        return  1 if a > b
       end
+      return 0
+    end
 
-      # Since SQLite 3.3.8, the table_info pragma has returned the default
-      # value of the row as a quoted SQL value. This method essentially
-      # unquotes those values.
-      def tweak_default(hash)
-        case hash["dflt_value"]
-        when /^null$/i
-          hash["dflt_value"] = nil
-        when /^'(.*)'$/
-          hash["dflt_value"] = $1.gsub(/''/, "'")
-        when /^"(.*)"$/
-          hash["dflt_value"] = $1.gsub(/""/, '"')
-        end
+    # Since SQLite 3.3.8, the table_info pragma has returned the default
+    # value of the row as a quoted SQL value. This method essentially
+    # unquotes those values.
+    def tweak_default(hash)
+      case hash["dflt_value"]
+      when /^null$/i
+        hash["dflt_value"] = nil
+      when /^'(.*)'$/
+        hash["dflt_value"] = $1.gsub(/''/, "'")
+      when /^"(.*)"$/
+        hash["dflt_value"] = $1.gsub(/""/, '"')
       end
+    end
   end
 
 end

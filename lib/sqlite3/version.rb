@@ -6,7 +6,7 @@ module SQLite3
     MINOR = 2
     TINY  = 4
 
-    STRING = [ MAJOR, MINOR, TINY ].join( "." )
+    STRING = [ MAJOR, MINOR, TINY ].join(".")
     #:beta-tag:
 
   end

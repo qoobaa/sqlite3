@@ -31,7 +31,7 @@ module SQLite3
 
     # Create a new ResultSet attached to the given database, using the
     # given sql text.
-    def initialize( db, stmt )
+    def initialize(db, stmt)
       @db = db
       @driver = @db.driver
       @stmt = stmt
@@ -41,29 +41,29 @@ module SQLite3
     # A convenience method for compiling the virtual machine and stepping
     # to the first row of the result set.
     def commence
-      result = @driver.step( @stmt.handle )
+      result = @driver.step(@stmt.handle)
       if result == Constants::ErrorCode::ERROR
-        @driver.reset( @stmt.handle )
+        @driver.reset(@stmt.handle)
       end
       check result
       @first_row = true
     end
     private :commence
 
-    def check( result )
-      @eof = ( result == Constants::ErrorCode::DONE )
-      found = ( result == Constants::ErrorCode::ROW )
-      Error.check( result, @db ) unless @eof || found
+    def check(result)
+      @eof = (result == Constants::ErrorCode::DONE)
+      found = (result == Constants::ErrorCode::ROW)
+      Error.check(result, @db) unless @eof || found
     end
     private :check
 
     # Reset the cursor, so that a result set which has reached end-of-file
     # can be rewound and reiterated.
-    def reset( *bind_params )
+    def reset(*bind_params)
       @stmt.must_be_open!
       @stmt.reset!(false)
-      @driver.reset( @stmt.handle )
-      @stmt.bind_params( *bind_params )
+      @driver.reset(@stmt.handle)
+      @stmt.bind_params(*bind_params)
       @eof = false
       commence
     end
@@ -92,7 +92,7 @@ module SQLite3
       @stmt.must_be_open!
 
       unless @first_row
-        result = @driver.step( @stmt.handle )
+        result = @driver.step(@stmt.handle)
         check result
       end
 
@@ -100,28 +100,28 @@ module SQLite3
 
       unless @eof
         row = []
-        @driver.data_count( @stmt.handle ).times do |column|
-          type	= @driver.column_type( @stmt.handle, column )
+        @driver.data_count(@stmt.handle).times do |column|
+          type  = @driver.column_type(@stmt.handle, column)
 
           if type == Constants::ColumnType::TEXT
-            row << @driver.column_text( @stmt.handle, column )
+            row << @driver.column_text(@stmt.handle, column)
           elsif type == Constants::ColumnType::NULL
             row << nil
           elsif type == Constants::ColumnType::BLOB
-            row << @driver.column_blob( @stmt.handle, column )
+            row << @driver.column_blob(@stmt.handle, column)
           else
-            row << @driver.column_text( @stmt.handle, column )
+            row << @driver.column_text(@stmt.handle, column)
           end
         end
 
         if @db.type_translation
-          row = @stmt.types.zip( row ).map do |type, value|
-            @db.translator.translate( type, value )
+          row = @stmt.types.zip(row).map do |type, value|
+            @db.translator.translate(type, value)
           end
         end
 
         if @db.results_as_hash
-          new_row = HashWithTypes[ *( @stmt.columns.zip( row ).to_a.flatten ) ]
+          new_row = HashWithTypes[ *(@stmt.columns.zip(row).to_a.flatten) ]
           row.each_with_index { |value,idx| new_row[idx] = value }
           row = new_row
         else
