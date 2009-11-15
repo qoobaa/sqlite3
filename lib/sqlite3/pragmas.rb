@@ -1,4 +1,4 @@
-require 'sqlite3/errors'
+require "sqlite3/errors"
 
 module SQLite3
 
@@ -88,10 +88,10 @@ module SQLite3
     private :set_int_pragma
 
     # The enumeration of valid synchronous modes.
-    SYNCHRONOUS_MODES = [ [ 'full', 2 ], [ 'normal', 1 ], [ 'off', 0 ] ]
+    SYNCHRONOUS_MODES = [ [ "full", 2 ], [ "normal", 1 ], [ "off", 0 ] ]
 
     # The enumeration of valid temp store modes.
-    TEMP_STORE_MODES  = [ [ 'default', 0 ], [ 'file', 1 ], [ 'memory', 2 ] ]
+    TEMP_STORE_MODES  = [ [ "default", 0 ], [ "file", 1 ], [ "memory", 2 ] ]
 
     # Does an integrity check on the database. If the check fails, a
     # SQLite3::Exception will be raised. Otherwise it

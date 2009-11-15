@@ -1,16 +1,16 @@
-require 'sqlite3/constants'
-require 'sqlite3/errors'
-require 'sqlite3/pragmas'
-require 'sqlite3/statement'
-require 'sqlite3/translator'
-require 'sqlite3/value'
+require "sqlite3/constants"
+require "sqlite3/errors"
+require "sqlite3/pragmas"
+require "sqlite3/statement"
+require "sqlite3/translator"
+require "sqlite3/value"
 
 module SQLite3
 
   # The Database class encapsulates a single connection to a SQLite3 database.
   # Its usage is very straightforward:
   #
-  #   require 'sqlite3'
+  #   require "sqlite3"
   #
   #   db = SQLite3::Database.new("data.db")
   #
