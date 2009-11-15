@@ -18,7 +18,7 @@ module SQLite3
       @driver.value_blob(@handle)
     end
 
-    def length(utf16=false)
+    def length(utf16 = false)
       if utf16
         @driver.value_bytes16(@handle)
       else
@@ -38,7 +38,7 @@ module SQLite3
       @driver.value_int64(@handle)
     end
 
-    def to_s(utf16=false)
+    def to_s(utf16 = false)
       @driver.value_text(@handle, utf16)
     end
 

@@ -1,5 +1,5 @@
-require 'time'
-require 'date'
+require "time"
+require "date"
 
 module SQLite3
 
@@ -16,7 +16,7 @@ module SQLite3
     # Create a new Translator instance. It will be preinitialized with default
     # translators for most SQL data types.
     def initialize
-      @translators = Hash.new(proc { |type,value| value })
+      @translators = Hash.new(proc { |type, value| value })
       @type_name_cache = {}
       register_default_translators
     end
