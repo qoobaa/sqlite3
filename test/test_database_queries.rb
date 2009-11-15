@@ -5,10 +5,7 @@ class TestDatabaseQueries < Test::Unit::TestCase
     @db_filename = "test_database.db"
     File.delete(@db_filename) if File.exists?(@db_filename)
     @db = SQLite3::Database.new(@db_filename)
-    @db.execute_batch <<eos
-CREATE TABLE t1(id INTEGER PRIMARY KEY ASC, t TEXT, nu NUMERIC, i INTEGER, no BLOB);
-CREATE TABLE t2(id INTEGER PRIMARY KEY ASC, t TEXT, nu NUMERIC, i INTEGER, no BLOB);
-eos
+    @db.execute("CREATE TABLE t1(id INTEGER PRIMARY KEY ASC, t TEXT, nu NUMERIC, i INTEGER, no BLOB)")
   end
 
   def teardown
@@ -17,7 +14,6 @@ eos
 
   def test_tables_empty
     assert_equal [], @db.execute("SELECT * FROM t1")
-    assert_equal [], @db.execute("SELECT * FROM t2")
   end
 
   def test_insert_and_select
