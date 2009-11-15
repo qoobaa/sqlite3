@@ -59,10 +59,10 @@ module SQLite3
         attach_function :sqlite3_interrupt, [:pointer], :void
 
         # extern "ibool sqlite3_complete(const char*)"
-        # TODO: attach_function :sqlite3_complete, [:string], :...
+        attach_function :sqlite3_complete, [:string], :int
 
         # extern "ibool sqlite3_complete16(const void*)"
-        # TODO: attach_function :sqlite3_complete16, [:pointer], :...
+        attach_function :sqlite3_complete16, [:pointer], :int
 
         # extern "int sqlite3_busy_handler(db,void*,void*)"
         attach_function :sqlite3_busy_handler, [:pointer, :pointer, :pointer], :int
@@ -98,7 +98,7 @@ module SQLite3
         attach_function :sqlite3_bind_text16, [:pointer, :int, :pointer, :int, :pointer], :int
 
         # #extern "int sqlite3_bind_value(stmt,int,value)"
-        # TODO?
+        attach_function :sqlite3_bind_value, [:pointer, :int, :pointer], :int
 
         # extern "int sqlite3_bind_parameter_count(stmt)"
         attach_function :sqlite3_bind_parameter_count, [:pointer], :int

@@ -608,7 +608,7 @@ module SQLite3
         require "sqlite3/driver/#{driver.to_s.downcase}/driver"
         driver = SQLite3::Driver.const_get(driver)::Driver
       else
-        [ "Native", "DL" ].each do |d|
+        [ "FFI" ].each do |d|
           begin
             require "sqlite3/driver/#{d.downcase}/driver"
             driver = SQLite3::Driver.const_get(d)::Driver
