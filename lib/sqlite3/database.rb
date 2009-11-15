@@ -183,7 +183,7 @@ module SQLite3
         if block_given?
           result.each { |row| yield row }
         else
-          return result.inject([]) { |arr,row| arr << row; arr }
+          return result.inject([]) { |arr, row| arr << row; arr }
         end
       end
     end

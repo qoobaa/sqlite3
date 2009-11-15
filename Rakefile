@@ -12,7 +12,7 @@ begin
     gem.email = "qoobaa@gmail.com"
     gem.homepage = "http://github.com/qoobaa/sqlite3"
     gem.authors = ["Jakub Kuźma"]
-    gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+    gem.add_development_dependency "test-unit", ">= 2.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError

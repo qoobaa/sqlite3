@@ -30,10 +30,11 @@ module SQLite3
 
           result = API.send((utf16 ? :sqlite3_prepare16 : :sqlite3_prepare), db, sql, sql.length, handle, remainder)
 
-          args = utf16 ? [utf16_length(remainder)] : []
-          remainder = remainder.to_s(*args)
+          # TODO: UTF-16
+          # args = utf16 ? [utf16_length(remainder)] : []
+          # remainder = remainder.to_s(*args)
 
-          [result, handle.get_pointer(0), remainder]
+          [result, handle.get_pointer(0), remainder.get_pointer(0).get_string(0)]
         end
 
         def complete?(sql, utf16 = false)

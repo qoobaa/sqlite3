@@ -30,7 +30,7 @@ module SQLite3
     # encapsulates the given SQL text. If the text contains more than one
     # statement (i.e., separated by semicolons), then the #remainder property
     # will be set to the trailing text.
-    def initialize(db, sql, utf16=false)
+    def initialize(db, sql, utf16 = false)
       raise ArgumentError, "nil argument passed as sql text" unless sql
       @db = db
       @driver = @db.driver
