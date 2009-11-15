@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'rubygems'
 require 'rake'
 
@@ -5,8 +7,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "sqlite3"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.summary = %Q{SQLite3 bindings to Ruby 1.8/1.9}
+    gem.description = %Q{SQLite3 bindings to Ruby 1.8/1.9}
     gem.email = "qoobaa@gmail.com"
     gem.homepage = "http://github.com/qoobaa/sqlite3"
     gem.authors = ["Jakub Kuźma"]
