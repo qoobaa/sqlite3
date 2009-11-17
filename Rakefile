@@ -7,13 +7,21 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "sqlite3"
-    gem.summary = %Q{SQLite3 bindings to Ruby 1.8/1.9}
-    gem.description = %Q{SQLite3 bindings to Ruby 1.8/1.9}
+    gem.summary = %Q{SQLite3/Ruby FFI bindings}
+    gem.description = %Q{SQLite3/Ruby FFI bindings}
     gem.email = "qoobaa@gmail.com"
     gem.homepage = "http://github.com/qoobaa/sqlite3"
     gem.authors = ["Jakub Kuźma"]
     gem.add_development_dependency "test-unit", ">= 2.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.post_install_message = <<-EOM
+
+WARNING!
+
+This is an early alpha version of SQLite3/Ruby FFI bindings!
+If you need native, production ready bindings install sqlite3-ruby instead.
+
+EOM
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
