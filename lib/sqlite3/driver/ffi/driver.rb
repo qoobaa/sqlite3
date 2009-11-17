@@ -5,8 +5,7 @@ module SQLite3
     module FFI
 
       class Driver
-        STATIC    =  0
-        TRANSIENT = -1
+        TRANSIENT = ::FFI::Pointer.new(-1)
 
         def open(filename, utf16 = false)
           handle = ::FFI::MemoryPointer.new(:pointer)
@@ -60,6 +59,7 @@ module SQLite3
                    end
 
           result = API.send(method, value)
+
           if utf16
             result.free = nil
             size = API.sqlite3_value_bytes(value)
@@ -92,65 +92,79 @@ module SQLite3
         end
 
         def busy_handler(db, data = nil, &block)
-          @busy_handler = block
+          # @busy_handler = block
 
-          unless @busy_handler_callback
-            @busy_handler_callback = ::DL.callback("IPI") do |cookie, timeout|
-              @busy_handler.call(cookie, timeout) || 0
-            end
-          end
+          # unless @busy_handler_callback
+          #   @busy_handler_callback = ::DL.callback("IPI") do |cookie, timeout|
+          #     @busy_handler.call(cookie, timeout) || 0
+          #   end
+          # end
 
-          API.sqlite3_busy_handler(db, block&&@busy_handler_callback, data)
+          # API.sqlite3_busy_handler(db, block&&@busy_handler_callback, data)
+          API.sqlite3_busy_handler(db, block, data)
         end
 
         def set_authorizer(db, data = nil, &block)
-          @authorizer_handler = block
+          # @authorizer_handler = block
 
-          unless @authorizer_handler_callback
-            @authorizer_handler_callback = ::DL.callback("IPIPPPP") do |cookie,mode,a,b,c,d|
-              @authorizer_handler.call(cookie, mode, a&&a.to_s, b&&b.to_s, c&&c.to_s, d&&d.to_s) || 0
-            end
-          end
+          # unless @authorizer_handler_callback
+          #   @authorizer_handler_callback = ::DL.callback("IPIPPPP") do |cookie,mode,a,b,c,d|
+          #     @authorizer_handler.call(cookie, mode, a&&a.to_s, b&&b.to_s, c&&c.to_s, d&&d.to_s) || 0
+          #   end
+          # end
 
-          API.sqlite3_set_authorizer(db, block&&@authorizer_handler_callback, data)
+          # API.sqlite3_set_authorizer(db, block&&@authorizer_handler_callback, data)
         end
 
         def trace(db, data = nil, &block)
-          @trace_handler = block
+          # @trace_handler = block
 
-          unless @trace_handler_callback
-            @trace_handler_callback = ::DL.callback("IPS") do |cookie,sql|
-              @trace_handler.call(cookie ? cookie.to_object : nil, sql) || 0
-            end
-          end
+          # unless @trace_handler_callback
+          #   @trace_handler_callback = ::DL.callback("IPS") do |cookie,sql|
+          #     @trace_handler.call(cookie ? cookie.to_object : nil, sql) || 0
+          #   end
+          # end
 
-          API.sqlite3_trace(db, block&&@trace_handler_callback, data)
+          # API.sqlite3_trace(db, block&&@trace_handler_callback, data)
+          API.sqlite3_trace(db, block, data)
         end
 
         def create_function(db, name, args, text, cookie, func, step, final)
           # begin
-          if @func_handler_callback.nil? && func
-            @func_handler_callback = ::DL.callback("0PIP") do |context,nargs,args|
-              args = args.to_s(nargs*4).unpack("L*").map {|i| ::FFI::MemoryPointer.new(i)}
-              data = API.sqlite3_user_data(context).to_object
-              data[:func].call(context, *args)
-            end
-          end
+          # if @func_handler_callback.nil? && func
+          #   @func_handler_callback = ::DL.callback("0PIP") do |context,nargs,args|
+          #     args = args.to_s(nargs*4).unpack("L*").map { |i| ::FFI::MemoryPointer.new(i) }
+          #     data = API.sqlite3_user_data(context).to_object
+          #     data[:func].call(context, *args)
+          #   end
+          # end
 
-          if @step_handler_callback.nil? && step
-            @step_handler_callback = ::DL.callback("0PIP") do |context,nargs,args|
-              args = args.to_s(nargs*4).unpack("L*").map {|i| ::FFI::MemoryPointer.new(i)}
-              data = API.sqlite3_user_data(context).to_object
-              data[:step].call(context, *args)
-            end
-          end
+          # if @step_handler_callback.nil? && step
+          #   @step_handler_callback = ::DL.callback("0PIP") do |context,nargs,args|
+          #     args = args.to_s(nargs*4).unpack("L*").map { |i| ::FFI::MemoryPointer.new(i) }
+          #     data = API.sqlite3_user_data(context).to_object
+          #     data[:step].call(context, *args)
+          #   end
+          # end
 
-          if @final_handler_callback.nil? && final
-            @final_handler_callback = ::DL.callback("0P") do |context|
-              data = API.sqlite3_user_data(context).to_object
-              data[:final].call(context)
-            end
-          end
+          # if @final_handler_callback.nil? && final
+          #   @final_handler_callback = ::DL.callback("0P") do |context|
+          #     data = API.sqlite3_user_data(context).to_object
+          #     data[:final].call(context)
+          #   end
+          # end
+
+          # data = {
+          #   :cookie => cookie,
+          #   :name => name,
+          #   :func => func,
+          #   :step => step,
+          #   :final => final
+          # }
+
+          # API.sqlite3_create_function(db, name, args, text, data, (func ? @func_handler_callback : nil), (step ? @step_handler_callback : nil), (final ? @final_handler_callback : nil))
+
+          # TODO
 
           data = {
             :cookie => cookie,
@@ -160,7 +174,7 @@ module SQLite3
             :final => final
           }
 
-          API.sqlite3_create_function(db, name, args, text, data, (func ? @func_handler_callback : nil), (step ? @step_handler_callback : nil), (final ? @final_handler_callback : nil))
+          API.sqlite3_create_function(db, name, args, text, data, func, step, final)
         end
 
         def aggregate_context(context)
