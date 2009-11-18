@@ -7,17 +7,32 @@ module SQLite3
       class Driver
         TRANSIENT = ::FFI::Pointer.new(-1)
 
-        def initialize(options)
-          @encoding = options.fetch
+        attr_reader :encoding
+
+        def initialize(options = {})
+          @encoding = options.fetch(:encoding, Encoding::UTF_8)
+          @encoding = Encoding.find(@encoding) if @encoding.kind_of?(String)
         end
 
-        def open(filename, utf16 = false)
+        def terminate_string!(string)
+          string << "\0\0".force_encoding(string.encoding) if utf16?(string)
+        end
+
+        def utf16?(string = nil)
+          [Encoding::UTF_16LE, Encoding::UTF_16BE].include?(string ? string.encoding : encoding)
+        end
+
+        def open(filename)
           handle = ::FFI::MemoryPointer.new(:pointer)
-          result = API.send((utf16 ? :sqlite3_open16 : :sqlite3_open), filename, handle)
+
+          terminate_string!(filename)
+
+          result = API.send((utf16? ? :sqlite3_open16 : :sqlite3_open), filename, handle)
+
           [result, handle.get_pointer(0)]
         end
 
-        def errmsg(db, utf16 = false)
+        def errmsg(db)
           if utf16
             msg = API.sqlite3_errmsg16(db)
             # msg.free = nil
@@ -27,7 +42,7 @@ module SQLite3
           end
         end
 
-        def prepare(db, sql, utf16 = false)
+        def prepare(db, sql)
           handle = ::FFI::MemoryPointer.new(:pointer)
           remainder = ::FFI::MemoryPointer.new(:pointer)
 
@@ -40,7 +55,7 @@ module SQLite3
           [result, handle.get_pointer(0), remainder.get_pointer(0).get_string(0)]
         end
 
-        def complete?(sql, utf16 = false)
+        def complete?(sql)
           API.send(utf16 ? :sqlite3_complete16 : :sqlite3_complete, sql)
         end
 
@@ -50,7 +65,7 @@ module SQLite3
           blob.to_s(API.sqlite3_value_bytes(value))
         end
 
-        def value_text(value, utf16 = false)
+        def value_text(value)
           method = case utf16
                    when nil, false
                      :sqlite3_value_text
@@ -81,7 +96,7 @@ module SQLite3
           # blob.to_s(API.sqlite3_column_bytes(stmt, column))
         end
 
-        def result_text(func, text, utf16 = false)
+        def result_text(func, text)
           method = case utf16
                    when false, nil
                      :sqlite3_result_text
@@ -196,7 +211,7 @@ module SQLite3
 
         def bind_string(stmt, index, value)
           case value.encoding
-          when Encoding::UTF_8
+          when Encoding::UTF_8, Encoding::US_ASCII
             method = :sqlite3_bind_text
           when Encoding::UTF_16LE, Encoding::UTF_16BE
             value = "\uFEFF".encode(value.encoding) + value # add byte order mask

@@ -2,7 +2,7 @@ require "helper"
 
 class TestDatabaseQueries < Test::Unit::TestCase
   def setup
-    @db = SQLite3::Database.new(":memory:", :utf16 => true)
+    @db = SQLite3::Database.new(":memory:")
     @db.execute("CREATE TABLE t1(id INTEGER PRIMARY KEY ASC, t TEXT, nu NUMERIC, i INTEGER, no BLOB)")
   end
 
