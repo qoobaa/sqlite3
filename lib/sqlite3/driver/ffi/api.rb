@@ -9,9 +9,9 @@ module SQLite3
 
         ffi_lib "libsqlite3.so"
 
-        callback :trace_handler, [:pointer, :string], :int
+        callback :trace_handler, [:pointer, :string], :void
         callback :busy_handler, [:pointer, :int], :int
-        callback :authorizer_handler, [:pointer, :int, :pointer, :pointer, :pointer, :pointer], :int
+        callback :authorizer_handler, [:pointer, :int, :string, :string, :string, :string], :int
         callback :func_handler, [:pointer, :int, :pointer], :void
         callback :step_handler, [:pointer, :int, :pointer], :void
         callback :final_handler, [:pointer], :void
