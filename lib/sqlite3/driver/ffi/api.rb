@@ -1,5 +1,3 @@
-require "ffi"
-
 module SQLite3
   module Driver
     module FFI
@@ -7,7 +5,24 @@ module SQLite3
       module API
         extend ::FFI::Library
 
-        ffi_lib "libsqlite3.so"
+        ffi_lib case RUBY_PLATFORM.downcase
+                when /darwin/
+                  "libsqlite3.dylib"
+                when /linux|freebsd|netbsd|openbsd|dragonfly|solaris/
+                  "libsqlite3.so"
+                when /win32/
+                  "sqlite3.dll"
+                else
+                  abort <<-EOF
+==== UNSUPPORTED PLATFORM ======================================================
+The platform '#{RUBY_PLATFORM}' is unsupported. Please help the author by
+editing the following file to allow your sqlite3 library to be found, and
+submitting a patch to qoobaa@gmail.com. Thanks!
+
+#{__FILE__}
+================================================================================
+        EOF
+                end
 
         attach_function :sqlite3_libversion, [], :string
         attach_function :sqlite3_open, [:string, :pointer], :int

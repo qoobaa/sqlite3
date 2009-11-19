@@ -1,6 +1,3 @@
-require "time"
-require "date"
-
 module SQLite3
 
   # The Translator class encapsulates the logic and callbacks necessary for

@@ -1,6 +1,3 @@
-require "sqlite3/errors"
-require "sqlite3/resultset"
-
 module SQLite3
 
   # A statement represents a prepared-but-unexecuted SQL query. It will rarely

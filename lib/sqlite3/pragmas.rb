@@ -1,5 +1,3 @@
-require "sqlite3/errors"
-
 module SQLite3
 
   # This module is intended for inclusion solely by the Database class. It

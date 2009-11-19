@@ -24,7 +24,6 @@ class TestDatabaseInitialization < Test::Unit::TestCase
     assert @db.closed?
   end
 
-
   def test_encoding_conversion_from_utf_16_to_utf_8
     expected_string = "test"
     db_filename = "test_database_encoding.db"

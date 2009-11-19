@@ -1,5 +1,3 @@
-require "sqlite3/constants"
-
 module SQLite3
 
   class Value
