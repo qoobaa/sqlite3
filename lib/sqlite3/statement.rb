@@ -1,17 +1,7 @@
 require "sqlite3/errors"
 require "sqlite3/resultset"
 
-class String
-  def to_blob
-    SQLite3::Blob.new(self)
-  end
-end
-
 module SQLite3
-
-  # A class for differentiating between strings and blobs, when binding them
-  # into statements.
-  class Blob < String; end
 
   # A statement represents a prepared-but-unexecuted SQL query. It will rarely
   # (if ever) be instantiated directly by a client, and is most often obtained
@@ -98,12 +88,10 @@ module SQLite3
           end
         when Numeric then
           @driver.bind_double(@handle, param, value.to_f)
-        when Blob then
-          @driver.bind_blob(@handle, param, value)
         when nil then
           @driver.bind_null(@handle, param)
         else
-          @driver.bind_text(@handle, param, value)
+          @driver.bind_string(@handle, param, value.to_s)
         end
       else
         param = param.to_s

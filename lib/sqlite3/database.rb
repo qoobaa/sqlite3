@@ -1,10 +1,3 @@
-require "sqlite3/constants"
-require "sqlite3/errors"
-require "sqlite3/pragmas"
-require "sqlite3/statement"
-require "sqlite3/translator"
-require "sqlite3/value"
-
 module SQLite3
 
   # The Database class encapsulates a single connection to a SQLite3 database.
@@ -64,23 +57,27 @@ module SQLite3
     # database.
     attr_accessor :type_translation
 
+    # Encoding used to comunicate with database.
+    attr_reader :encoding
+
     # Create a new Database object that opens the given file. If utf16
     # is +true+, the filename is interpreted as a UTF-16 encoded string.
     #
     # By default, the new database will return result rows as arrays
     # (#results_as_hash) and has type translation disabled (#type_translation=).
     def initialize(file_name, options = {})
-      utf16 = options.fetch(:utf16, false)
+      @encoding = Encoding.find(options.fetch(:encoding, "utf-8"))
+
       load_driver(options[:driver])
 
       @statement_factory = options[:statement_factory] || Statement
 
-      result, @handle = @driver.open(file_name, utf16)
+      result, @handle = @driver.open(file_name)
       Error.check(result, self, "could not open database")
 
       @closed = false
-      @results_as_hash = options.fetch(:results_as_hash,false)
-      @type_translation = options.fetch(:type_translation,false)
+      @results_as_hash = options.fetch(:results_as_hash, false)
+      @type_translation = options.fetch(:type_translation, false)
       @translator = nil
       @transaction_active = false
     end
@@ -88,14 +85,14 @@ module SQLite3
     # Return +true+ if the string is a valid (ie, parsable) SQL statement, and
     # +false+ otherwise. If +utf16+ is +true+, then the string is a UTF-16
     # character string.
-    def complete?(string, utf16 = false)
-      @driver.complete?(string, utf16)
+    def complete?(string)
+      @driver.complete?(string)
     end
 
     # Return a string describing the last error to have occurred with this
     # database.
-    def errmsg(utf16 = false)
-      @driver.errmsg(@handle, utf16)
+    def errmsg
+      @driver.errmsg(@handle)
     end
 
     # Return an integer representing the last error to have occurred with this
