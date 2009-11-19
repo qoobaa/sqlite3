@@ -145,7 +145,7 @@ module SQLite3
         api_delegate :bind_null
         api_delegate :bind_parameter_index
         api_delegate :bind_parameter_name
-        # api_delegate :busy_timeout
+        api_delegate :busy_timeout
         # api_delegate :changes
         api_delegate :close
         # api_delegate :column_bytes
