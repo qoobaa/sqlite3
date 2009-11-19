@@ -20,7 +20,10 @@ begin
 WARNING!
 
 This is an early alpha version of SQLite3/Ruby FFI bindings!
-If you need native, production ready bindings install sqlite3-ruby instead.
+Currently we support Ruby 1.9 ONLY.
+
+If you need native bindings for Ruby 1.8 - install sqlite3-ruby instead.
+You may need to uninstall this sqlite3 gem as well.
 
 EOM
   end
