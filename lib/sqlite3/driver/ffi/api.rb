@@ -5,6 +5,7 @@ module SQLite3
       module API
         extend ::FFI::Library
 
+        # TODO: cleanup
         ffi_lib case RUBY_PLATFORM.downcase
                 when /darwin/
                   "libsqlite3.dylib"
