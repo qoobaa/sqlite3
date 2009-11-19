@@ -22,7 +22,7 @@ submitting a patch to qoobaa@gmail.com. Thanks!
 
 #{__FILE__}
 ================================================================================
-        EOF
+EOF
                 end
 
         attach_function :sqlite3_libversion, [], :string

@@ -16,15 +16,15 @@ begin
     gem.add_development_dependency "test-unit", ">= 2.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     gem.post_install_message = <<-EOM
-
-WARNING!
-
+==== WARNING ===================================================================
 This is an early alpha version of SQLite3/Ruby FFI bindings!
 Currently we support Ruby 1.9 ONLY.
 
 If you need native bindings for Ruby 1.8 - install sqlite3-ruby instead.
 You may need to uninstall this sqlite3 gem as well.
 
+Thank you for installing sqlite3 gem! Suggestions: qoobaa@gmail.com
+================================================================================
 EOM
   end
 rescue LoadError
