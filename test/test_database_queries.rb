@@ -6,6 +6,10 @@ class TestDatabaseQueries < Test::Unit::TestCase
     @db.execute("CREATE TABLE t1(id INTEGER PRIMARY KEY ASC, t TEXT, nu NUMERIC, i INTEGER, no BLOB)")
   end
 
+  def teardown
+    @db.close
+  end
+
   def test_tables_empty
     assert_equal [], @db.execute("SELECT * FROM t1")
   end
@@ -42,9 +46,4 @@ class TestDatabaseQueries < Test::Unit::TestCase
   #   @db.close
   #   @db.execute("SELECT * FROM t1")
   # end
-
-  def test_trace
-    @db.trace { |data, sql| puts data, sql }
-    rows = @db.execute("SELECT * FROM t1")
-  end
 end

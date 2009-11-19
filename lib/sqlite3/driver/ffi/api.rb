@@ -9,13 +9,6 @@ module SQLite3
 
         ffi_lib "libsqlite3.so"
 
-        callback :trace_handler, [:pointer, :string], :int
-        callback :busy_handler, [:pointer, :int], :int
-        callback :authorizer_handler, [:pointer, :int, :pointer, :pointer, :pointer, :pointer], :int
-        callback :func_handler, [:pointer, :int, :pointer], :void
-        callback :step_handler, [:pointer, :int, :pointer], :void
-        callback :final_handler, [:pointer], :void
-
         attach_function :sqlite3_libversion, [], :string
         attach_function :sqlite3_open, [:string, :pointer], :int
         attach_function :sqlite3_open16, [:pointer, :pointer], :int
@@ -34,10 +27,7 @@ module SQLite3
         attach_function :sqlite3_interrupt, [:pointer], :void
         attach_function :sqlite3_complete, [:string], :int
         attach_function :sqlite3_complete16, [:pointer], :int
-        attach_function :sqlite3_busy_handler, [:pointer, :busy_handler, :pointer], :int
         attach_function :sqlite3_busy_timeout, [:pointer, :int], :int
-        attach_function :sqlite3_set_authorizer, [:pointer, :authorizer_handler, :pointer], :int
-        attach_function :sqlite3_trace, [:pointer, :trace_handler, :pointer], :pointer
         attach_function :sqlite3_bind_blob, [:pointer, :int, :pointer, :int, :pointer], :int
         attach_function :sqlite3_bind_double, [:pointer, :int, :double], :int
         attach_function :sqlite3_bind_int, [:pointer, :int, :int], :int
@@ -64,8 +54,6 @@ module SQLite3
         attach_function :sqlite3_column_text, [:pointer, :int], :string
         attach_function :sqlite3_column_text16, [:pointer, :int], :pointer
         attach_function :sqlite3_column_type, [:pointer, :int], :int
-        attach_function :sqlite3_create_function, [:pointer, :string, :int, :int, :pointer, :func_handler, :step_handler, :final_handler], :int
-        attach_function :sqlite3_create_function16, [:pointer, :pointer, :int, :int, :pointer, :func_handler, :step_handler, :final_handler], :int
         attach_function :sqlite3_aggregate_count, [:pointer], :int
         attach_function :sqlite3_value_blob, [:pointer], :pointer
         attach_function :sqlite3_value_bytes, [:pointer], :int
