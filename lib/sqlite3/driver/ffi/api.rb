@@ -27,7 +27,7 @@ module SQLite3
         # attach_function :sqlite3_interrupt, [:pointer], :void
         # attach_function :sqlite3_complete, [:string], :int
         # attach_function :sqlite3_complete16, [:pointer], :int
-        # attach_function :sqlite3_busy_timeout, [:pointer, :int], :int
+        attach_function :sqlite3_busy_timeout, [:pointer, :int], :int
         attach_function :sqlite3_bind_blob, [:pointer, :int, :pointer, :int, :pointer], :int
         attach_function :sqlite3_bind_double, [:pointer, :int, :double], :int
         attach_function :sqlite3_bind_int, [:pointer, :int, :int], :int
