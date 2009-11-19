@@ -9,7 +9,7 @@ module SQLite3
 
         ffi_lib "libsqlite3.so"
 
-        # attach_function :sqlite3_libversion, [], :string
+        attach_function :sqlite3_libversion, [], :string
         attach_function :sqlite3_open, [:string, :pointer], :int
         attach_function :sqlite3_open16, [:pointer, :pointer], :int
         attach_function :sqlite3_close, [:pointer], :int

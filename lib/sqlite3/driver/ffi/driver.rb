@@ -160,7 +160,7 @@ module SQLite3
         api_delegate :finalize
         # api_delegate :interrupt
         api_delegate :last_insert_rowid
-        # api_delegate :libversion
+        api_delegate :libversion
         # api_delegate :reset
         # api_delegate :result_error
         api_delegate :step
