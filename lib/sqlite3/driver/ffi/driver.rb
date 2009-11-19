@@ -7,21 +7,25 @@ module SQLite3
       class Driver
         TRANSIENT = ::FFI::Pointer.new(-1)
 
-        def open(filename)
+        def open(filename, utf_16 = false)
           handle = ::FFI::MemoryPointer.new(:pointer)
-          result = API.sqlite3_open(filename, handle)
+          if utf_16
+            filename = filename.encode(Encoding.utf_16native)
+            result = API.sqlite3_open16(c_string(filename), handle)
+          else
+            filename = filename.encode(Encoding.utf_8)
+            result = API.sqlite3_open(filename, handle)
+          end
           [result, handle.get_pointer(0)]
         end
 
-        def open16(filename)
-          handle = ::FFI::MemoryPointer.new(:pointer)
-          filename = filename.encode(Encoding.native_utf_16)
-          result = API.sqlite3_open16(c_string(filename), handle)
-          [result, handle.get_pointer(0)]
-        end
-
-        def errmsg(db)
-          API.sqlite3_errmsg(db).force_encoding(::Encoding::UTF_8)
+        def errmsg(db, utf_16 = false)
+          if utf_16
+            ptr = API.sqlite3_errmsg16(db)
+            get_string_utf_16(ptr).force_encoding(Encoding.utf_16native)
+          else
+            API.sqlite3_errmsg(db).force_encoding(Encoding.utf_8)
+          end
         end
 
         def prepare(db, sql)
@@ -73,29 +77,21 @@ module SQLite3
         #   result
         # end
 
-        def column_blob(stmt, column)
-          blob = API.sqlite3_column_blob(stmt, column)
-          length = API.sqlite3_column_bytes(stmt, column)
-          blob.get_bytes(0, length)
-          # blob.free = nil
-          # blob.to_s(API.sqlite3_column_bytes(stmt, column))
-        end
+        # def result_text(func, text)
+        #   method = case utf16
+        #            when false, nil
+        #              :sqlite3_result_text
+        #            when :le
+        #              :sqlite3_result_text16le
+        #            when :be
+        #              :sqlite3_result_text16be
+        #            else
+        #              :sqlite3_result_text16
+        #            end
 
-        def result_text(func, text)
-          method = case utf16
-                   when false, nil
-                     :sqlite3_result_text
-                   when :le
-                     :sqlite3_result_text16le
-                   when :be
-                     :sqlite3_result_text16be
-                   else
-                     :sqlite3_result_text16
-                   end
-
-          s = text.to_s
-          API.send(method, func, s, s.length, TRANSIENT)
-        end
+        #   s = text.to_s
+        #   API.send(method, func, s, s.length, TRANSIENT)
+        # end
 
         # def aggregate_context(context)
         #   ptr = API.sqlite3_aggregate_context(context, 4)
@@ -110,36 +106,38 @@ module SQLite3
 
         def bind_string(stmt, index, value)
           case value.encoding
-          when ::Encoding::UTF_8, ::Encoding::US_ASCII
-            method = :sqlite3_bind_text
-          when ::Encoding::UTF_16LE, ::Encoding::UTF_16BE
+          when Encoding.utf_8, Encoding.us_ascii
+            API.sqlite3_bind_text(stmt, index, value, value.bytesize, TRANSIENT)
+          when Encoding.utf_16le, Encoding.utf_16be
             value = add_byte_order_mask(value)
-            method = :sqlite3_bind_text16
+            API.sqlite3_bind_text16(stmt, index, value, value.bytesize, TRANSIENT)
           else
-            method = :sqlite3_bind_blob
+            API.sqlite3_bind_blob(stmt, index, value, value.bytesize, TRANSIENT)
           end
-          API.send(method, stmt, index, value, value.bytesize, TRANSIENT)
         end
 
-        def column_text(stmt, column)
-          result = API.sqlite3_column_text(stmt, column)
-          result ? result.to_s : nil
+        def column_blob(stmt, column)
+          blob = API.sqlite3_column_blob(stmt, column)
+          length = API.sqlite3_column_bytes(stmt, column)
+          blob.get_bytes(0, length) # free?
         end
 
-        def column_name(stmt, column)
-          result = API.sqlite3_column_name(stmt, column)
-          result ? result.to_s : nil
-        end
-
-        def column_decltype(stmt, column)
-          result = API.sqlite3_column_decltype(stmt, column)
-          result ? result.to_s : nil
+        def column_text(stmt, column, utf_16 = false)
+          if utf_16
+            ptr = API.sqlite3_column_text16(stmt, column)
+            length = API.sqlite3_column_bytes16(stmt, column)
+            ptr.get_bytes(0, length).force_encoding(Encoding.utf_16native) # free?
+          else
+            API.sqlite3_column_text(stmt, column).force_encoding(Encoding.utf_8)
+          end
         end
 
         def self.api_delegate(name)
           define_method(name) { |*args| API.send("sqlite3_#{name}", *args) }
         end
 
+        api_delegate :column_name
+        api_delegate :column_decltype
         # api_delegate :aggregate_count
         api_delegate :bind_double
         api_delegate :bind_int
@@ -153,9 +151,9 @@ module SQLite3
         # api_delegate :column_bytes
         # api_delegate :column_bytes16
         api_delegate :column_count
-        # api_delegate :column_double
+        api_delegate :column_double
         # api_delegate :column_int
-        # api_delegate :column_int64
+        api_delegate :column_int64
         api_delegate :column_type
         api_delegate :data_count
         api_delegate :errcode
@@ -194,9 +192,9 @@ module SQLite3
         end
 
         def get_string_utf_16(ptr)
-          len = 0
-          len += 2 until ptr.get_bytes(len, 2) == "\0\0"
-          ptr.get_bytes(0, len)
+          length = 0
+          length += 2 until ptr.get_bytes(length, 2) == "\0\0"
+          ptr.get_bytes(0, length)
         end
       end
     end

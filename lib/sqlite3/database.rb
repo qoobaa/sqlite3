@@ -72,7 +72,7 @@ module SQLite3
 
       @statement_factory = options[:statement_factory] || Statement
 
-      result, @handle = @driver.open(file_name)
+      result, @handle = @driver.open(file_name, Encoding.utf_16?(@encoding))
       Error.check(result, self, "could not open database")
 
       @closed = false
@@ -83,8 +83,7 @@ module SQLite3
     end
 
     # Return +true+ if the string is a valid (ie, parsable) SQL statement, and
-    # +false+ otherwise. If +utf16+ is +true+, then the string is a UTF-16
-    # character string.
+    # +false+ otherwise
     def complete?(string)
       @driver.complete?(string)
     end
@@ -131,7 +130,7 @@ module SQLite3
     # The Statement can then be executed using Statement#execute.
     #
     def prepare(sql)
-      stmt = @statement_factory.new(self, sql)
+      stmt = @statement_factory.new(self, sql, Encoding.utf_16?(@encoding))
       if block_given?
         begin
           yield stmt

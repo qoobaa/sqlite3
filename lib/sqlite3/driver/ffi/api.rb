@@ -14,7 +14,7 @@ module SQLite3
         attach_function :sqlite3_open16, [:pointer, :pointer], :int
         attach_function :sqlite3_close, [:pointer], :int
         attach_function :sqlite3_errmsg, [:pointer], :string
-        # attach_function :sqlite3_errmsg16, [:pointer], :pointer
+        attach_function :sqlite3_errmsg16, [:pointer], :pointer
         attach_function :sqlite3_errcode, [:pointer], :int
         attach_function :sqlite3_prepare, [:pointer, :string, :int, :pointer, :pointer], :int
         # attach_function :sqlite3_prepare16, [:pointer, :pointer, :int, :pointer, :pointer], :int
@@ -43,16 +43,16 @@ module SQLite3
         attach_function :sqlite3_data_count, [:pointer], :int
         attach_function :sqlite3_column_blob, [:pointer, :int], :pointer
         attach_function :sqlite3_column_bytes, [:pointer, :int], :int
-        # attach_function :sqlite3_column_bytes16, [:pointer, :int], :int
+        attach_function :sqlite3_column_bytes16, [:pointer, :int], :int
         attach_function :sqlite3_column_decltype, [:pointer, :int], :string
         # attach_function :sqlite3_column_decltype16, [:pointer, :int], :pointer
-        # attach_function :sqlite3_column_double, [:pointer, :int], :double
+        attach_function :sqlite3_column_double, [:pointer, :int], :double
         # attach_function :sqlite3_column_int, [:pointer, :int], :int
-        # attach_function :sqlite3_column_int64, [:pointer, :int], :int64
+        attach_function :sqlite3_column_int64, [:pointer, :int], :int64
         attach_function :sqlite3_column_name, [:pointer, :int], :string
         # attach_function :sqlite3_column_name16, [:pointer, :int], :pointer
         attach_function :sqlite3_column_text, [:pointer, :int], :string
-        # attach_function :sqlite3_column_text16, [:pointer, :int], :pointer
+        attach_function :sqlite3_column_text16, [:pointer, :int], :pointer
         attach_function :sqlite3_column_type, [:pointer, :int], :int
         # attach_function :sqlite3_aggregate_count, [:pointer], :int
         # attach_function :sqlite3_value_blob, [:pointer], :pointer

@@ -4,10 +4,10 @@ module SQLite3
       def find(encoding)
         enc = encoding.to_s
         if enc.downcase == "utf-16"
-          native_utf_16
+          utf_16native
         else
           ::Encoding.find(enc).tap do |e|
-            if utf_16?(e) && e != native_utf_16
+            if utf_16?(e) && e != utf_16native
               raise ArgumentError, "requested to use byte order different than native"
             end
           end
@@ -19,8 +19,16 @@ module SQLite3
         [utf_16le, utf_16be].include?(enc)
       end
 
-      def native_utf_16
+      def utf_16native
         "Ruby".unpack("i")[0] == 2036495698 ? utf_16le : utf_16be
+      end
+
+      def us_ascii
+        ::Encoding::US_ASCII
+      end
+
+      def utf_8
+        ::Encoding::UTF_8
       end
 
       def utf_16le

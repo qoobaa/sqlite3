@@ -31,10 +31,11 @@ module SQLite3
 
     # Create a new ResultSet attached to the given database, using the
     # given sql text.
-    def initialize(db, stmt)
+    def initialize(db, stmt, utf_16 = false)
       @db = db
       @driver = @db.driver
       @stmt = stmt
+      @utf_16 = utf_16
       commence
     end
 
@@ -103,14 +104,16 @@ module SQLite3
         @driver.data_count(@stmt.handle).times do |column|
           type  = @driver.column_type(@stmt.handle, column)
 
-          if type == Constants::ColumnType::TEXT
-            row << @driver.column_text(@stmt.handle, column)
-          elsif type == Constants::ColumnType::NULL
+          if type == Constants::ColumnType::NULL
             row << nil
           elsif type == Constants::ColumnType::BLOB
             row << @driver.column_blob(@stmt.handle, column)
+          elsif type == Constants::ColumnType::INTEGER
+            row << @driver.column_int64(@stmt.handle, column)
+          elsif type == Constants::ColumnType::FLOAT
+            row << @driver.column_double(@stmt.handle, column)
           else
-            row << @driver.column_text(@stmt.handle, column)
+            row << @driver.column_text(@stmt.handle, column, @utf_16)
           end
         end
 

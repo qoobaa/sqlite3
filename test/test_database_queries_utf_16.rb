@@ -1,8 +1,8 @@
 require "helper"
 
-class TestDatabaseQueries < Test::Unit::TestCase
+class TestDatabaseQueriesUtf16 < Test::Unit::TestCase
   def setup
-    @db = SQLite3::Database.new(":memory:")
+    @db = SQLite3::Database.new(":memory:", :encoding => "utf-16")
     @db.execute("CREATE TABLE t1(id INTEGER PRIMARY KEY ASC, t TEXT, nu1 NUMERIC, i1 INTEGER, i2 INTEGER, no BLOB)")
   end
 
@@ -19,10 +19,11 @@ class TestDatabaseQueries < Test::Unit::TestCase
     rows = @db.execute("SELECT * FROM t1")
     assert_equal 1, rows.size
     row = rows[0]
-    assert_equal "text1", row[1]
-    assert_equal "1.22", row[2]
-    assert_equal "42", row[3]
-    assert_equal "4294967296", row[4]
+    assert_equal "text1".encode(Encoding::UTF_16LE), row[1]
+    assert_equal Encoding::UTF_16LE, row[1].encoding
+    assert_equal 1.22, row[2]
+    assert_equal 42, row[3]
+    assert_equal 4294967296, row[4]
     assert_nil row[5]
   end
 
@@ -32,11 +33,13 @@ class TestDatabaseQueries < Test::Unit::TestCase
     rows = @db.execute("SELECT * FROM t1")
     assert_equal 1, rows.size
     row = rows[0]
-    assert_equal "text1", row[1]
-    assert_equal "1.22", row[2]
-    assert_equal "42", row[3]
-    assert_equal "4294967296", row[4]
+    assert_equal "text1".encode(Encoding::UTF_16LE), row[1]
+    assert_equal Encoding::UTF_16LE, row[1].encoding
+    assert_equal 1.22, row[2]
+    assert_equal 42, row[3]
+    assert_equal 4294967296, row[4]
     assert_equal blob, row[5]
+    assert_equal Encoding::ASCII_8BIT, row[5].encoding
   end
 
   def test_execute_with_different_encodings
@@ -47,8 +50,14 @@ class TestDatabaseQueries < Test::Unit::TestCase
     @db.execute("INSERT INTO t1 VALUES(NULL, ?, NULL, NULL, NULL, NULL)", expected_string.encode(Encoding::UTF_16BE))
     rows = @db.execute("SELECT * FROM t1")
     assert_equal 4, rows.size
-    strings = rows.map { |row| row[1] }
-    assert_equal [expected_string] * 4, strings
+    assert_equal expected_string, rows[0][1]
+    assert_equal expected_string.encode(Encoding::UTF_16LE), rows[1][1]
+    assert_equal expected_string.encode(Encoding::UTF_16LE), rows[2][1]
+    assert_equal expected_string.encode(Encoding::UTF_16LE), rows[3][1]
+    assert_equal Encoding::ASCII_8BIT, rows[0][1].encoding
+    assert_equal Encoding::UTF_16LE, rows[1][1].encoding
+    assert_equal Encoding::UTF_16LE, rows[2][1].encoding
+    assert_equal Encoding::UTF_16LE, rows[3][1].encoding
   end
 
   def test_execute_with_bad_query

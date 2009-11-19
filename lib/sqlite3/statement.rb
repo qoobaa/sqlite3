@@ -20,12 +20,13 @@ module SQLite3
     # encapsulates the given SQL text. If the text contains more than one
     # statement (i.e., separated by semicolons), then the #remainder property
     # will be set to the trailing text.
-    def initialize(db, sql, utf16 = false)
+    def initialize(db, sql, utf_16 = false)
       raise ArgumentError, "nil argument passed as sql text" unless sql
       @db = db
       @driver = @db.driver
       @closed = false
       @results = @columns = nil
+      @utf_16 = utf_16
       result, @handle, @remainder = @driver.prepare(@db.handle, sql)
       Error.check(result, @db)
     end
@@ -121,7 +122,7 @@ module SQLite3
       reset! if active?
 
       bind_params(*bind_vars) unless bind_vars.empty?
-      @results = ResultSet.new(@db, self)
+      @results = ResultSet.new(@db, self, @utf_16)
 
       if block_given?
         yield @results
