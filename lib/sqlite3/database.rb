@@ -55,7 +55,7 @@ module SQLite3
 
     # A boolean indicating whether or not type translation is enabled for this
     # database.
-    attr_accessor :type_translation
+    # attr_accessor :type_translation
 
     # Encoding used to comunicate with database.
     attr_reader :encoding
@@ -77,9 +77,9 @@ module SQLite3
 
       @closed = false
       @results_as_hash = options.fetch(:results_as_hash, false)
-      @type_translation = options.fetch(:type_translation, false)
-      @translator = nil
-      @transaction_active = false
+      # @type_translation = options.fetch(:type_translation, false)
+      # @translator = nil
+      # @transaction_active = false
     end
 
     # Return +true+ if the string is a valid (ie, parsable) SQL statement, and
@@ -106,9 +106,9 @@ module SQLite3
     # instances. Furthermore, the translators are instantiated lazily, so that
     # if a database does not use type translation, it will not be burdened by
     # the overhead of a useless type translator. (See the Translator class.)
-    def translator
-      @translator ||= Translator.new
-    end
+    # def translator
+    #   @translator ||= Translator.new
+    # end
 
     # Closes this database.
     def close
@@ -197,16 +197,16 @@ module SQLite3
     #
     # This always returns +nil+, making it unsuitable for queries that return
     # rows.
-    def execute_batch(sql, *bind_vars)
-      sql = sql.strip
-      until sql.empty? do
-        prepare(sql) do |stmt|
-          stmt.execute(*bind_vars)
-          sql = stmt.remainder.strip
-        end
-      end
-      nil
-    end
+    # def execute_batch(sql, *bind_vars)
+    #   sql = sql.strip
+    #   until sql.empty? do
+    #     prepare(sql) do |stmt|
+    #       stmt.execute(*bind_vars)
+    #       sql = stmt.remainder.strip
+    #     end
+    #   end
+    #   nil
+    # end
 
     # This is a convenience method for creating a statement, binding
     # paramters to it, and calling execute:
@@ -219,18 +219,18 @@ module SQLite3
     # returned, or you could have problems with locks on the table. If called
     # with a block, +close+ will be invoked implicitly when the block
     # terminates.
-    def query(sql, *bind_vars)
-      result = prepare(sql).execute(*bind_vars)
-      if block_given?
-        begin
-          yield result
-        ensure
-          result.close
-        end
-      else
-        return result
-      end
-    end
+    # def query(sql, *bind_vars)
+    #   result = prepare(sql).execute(*bind_vars)
+    #   if block_given?
+    #     begin
+    #       yield result
+    #     ensure
+    #       result.close
+    #     end
+    #   else
+    #     return result
+    #   end
+    # end
 
     # A convenience method for obtaining the first row of a result set, and
     # discarding all others. It is otherwise identical to #execute.
@@ -260,20 +260,20 @@ module SQLite3
     # Returns the number of changes made to this database instance by the last
     # operation performed. Note that a "delete from table" without a where
     # clause will not affect this value.
-    def changes
-      @driver.changes(@handle)
-    end
+    # def changes
+    #   @driver.changes(@handle)
+    # end
 
     # Returns the total number of changes made to this database instance
     # since it was opened.
-    def total_changes
-      @driver.total_changes(@handle)
-    end
+    # def total_changes
+    #   @driver.total_changes(@handle)
+    # end
 
     # Interrupts the currently executing operation, causing it to abort.
-    def interrupt
-      @driver.interrupt(@handle)
-    end
+    # def interrupt
+    #   @driver.interrupt(@handle)
+    # end
 
     # Indicates that if a request for a resource terminates because that
     # resource is busy, SQLite should sleep and retry for up to the indicated

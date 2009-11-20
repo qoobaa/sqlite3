@@ -114,11 +114,11 @@ module SQLite3
           end
         end
 
-        if @db.type_translation
-          row = @stmt.types.zip(row).map do |type, value|
-            @db.translator.translate(type, value)
-          end
-        end
+        # if @db.type_translation
+        #   row = @stmt.types.zip(row).map do |type, value|
+        #     @db.translator.translate(type, value)
+        #   end
+        # end
 
         if @db.results_as_hash
           new_row = HashWithTypes[ *(@stmt.columns.zip(row).to_a.flatten) ]
@@ -133,7 +133,7 @@ module SQLite3
           row.fields = @stmt.columns
         end
 
-        row.types = @stmt.types
+        # row.types = @stmt.types
 
         return row
       end
