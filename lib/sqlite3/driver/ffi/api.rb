@@ -38,7 +38,7 @@ EOF
         # attach_function :sqlite3_reset, [:pointer], :int
         attach_function :sqlite3_step, [:pointer], :int
         attach_function :sqlite3_last_insert_rowid, [:pointer], :int64
-        # attach_function :sqlite3_changes, [:pointer], :int
+        attach_function :sqlite3_changes, [:pointer], :int
         # attach_function :sqlite3_total_changes, [:pointer], :int
         # attach_function :sqlite3_interrupt, [:pointer], :void
         # attach_function :sqlite3_complete, [:string], :int

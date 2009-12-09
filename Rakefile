@@ -14,6 +14,7 @@ begin
     gem.authors = ["Jakub Kuźma"]
     gem.add_dependency "ffi", ">= 0.5.1"
     gem.add_development_dependency "test-unit", ">= 2.0"
+    gem.add_development_dependency "activerecord", ">= 2.3.5"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
     gem.post_install_message = <<-EOM
 ==== WARNING ===================================================================
