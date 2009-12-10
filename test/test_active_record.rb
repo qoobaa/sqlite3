@@ -29,6 +29,7 @@ class TestActiveRecord < Test::Unit::TestCase
   def setup
     ActiveRecord::Base.establish_connection(:adapter  => "sqlite3", :database => ":memory:")
     ActiveRecord::Base.default_timezone = :utc
+    ActiveRecord::Migration.verbose = false
     CreateUsers.migrate(:up)
   end
 
