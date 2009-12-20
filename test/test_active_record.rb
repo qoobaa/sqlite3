@@ -90,4 +90,22 @@ class TestActiveRecord < Test::Unit::TestCase
     user = User.first
     assert_equal "alice", user.login
   end
+
+  def test_user_delete
+    User.create!(:login => "bob")
+    user = User.first
+    assert_equal "bob", user.login
+    user.destroy
+    assert_equal 0, User.count
+  end
+
+  def test_user_dirty_attributes
+    User.create!(:login => "bob")
+    user = User.first
+    assert_equal "bob", user.login
+    user.login = "alice"
+    assert user.login_changed?
+    assert_equal "alice", user.login
+    assert_equal "bob", user.login_was
+  end
 end

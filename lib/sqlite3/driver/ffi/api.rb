@@ -11,7 +11,7 @@ module SQLite3
                   "libsqlite3.dylib"
                 when /linux|freebsd|netbsd|openbsd|dragonfly|solaris/
                   "libsqlite3.so"
-                when /win32/
+                when /win32|i386-mingw32/
                   "sqlite3.dll"
                 else
                   abort <<-EOF
