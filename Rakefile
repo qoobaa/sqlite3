@@ -7,8 +7,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "sqlite3"
-    gem.summary = %Q{SQLite3/Ruby FFI bindings}
-    gem.description = %Q{SQLite3/Ruby FFI bindings}
+    gem.summary = %Q{SQLite3 FFI bindings for Ruby 1.9}
+    gem.description = %Q{SQLite3 FFI bindings for Ruby 1.9}
     gem.email = "qoobaa@gmail.com"
     gem.homepage = "http://github.com/qoobaa/sqlite3"
     gem.authors = ["Jakub Kuźma"]
