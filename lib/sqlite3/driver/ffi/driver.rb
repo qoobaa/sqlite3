@@ -44,66 +44,6 @@ module SQLite3
           [result, handle.get_pointer(0), remainder_string]
         end
 
-        # def complete?(sql)
-        #   API.send(utf16?(string) ? :sqlite3_complete16 : :sqlite3_complete, sql)
-        # end
-
-        # def value_blob(value)
-        #   blob = API.sqlite3_value_blob(value)
-        #   # blob.free = nil
-        #   blob.to_s(API.sqlite3_value_bytes(value))
-        # end
-
-        # def value_text(value)
-        #   method = case utf16
-        #            when nil, false
-        #              :sqlite3_value_text
-        #            when :le
-        #              :sqlite3_value_text16le
-        #            when :be
-        #              :sqlite3_value_text16be
-        #            else
-        #              :sqlite3_value_text16
-        #            end
-
-        #   result = API.send(method, value)
-
-        #   if utf16
-        #     # result.free = nil
-        #     size = API.sqlite3_value_bytes(value)
-        #     result = result.to_s(size)
-        #   end
-
-        #   result
-        # end
-
-        # def result_text(func, text)
-        #   method = case utf16
-        #            when false, nil
-        #              :sqlite3_result_text
-        #            when :le
-        #              :sqlite3_result_text16le
-        #            when :be
-        #              :sqlite3_result_text16be
-        #            else
-        #              :sqlite3_result_text16
-        #            end
-
-        #   s = text.to_s
-        #   API.send(method, func, s, s.length, TRANSIENT)
-        # end
-
-        # def aggregate_context(context)
-        #   ptr = API.sqlite3_aggregate_context(context, 4)
-        #   ptr.free = nil
-        #   obj = (ptr ? ptr.to_object : nil)
-        #   if obj.nil?
-        #     obj = Hash.new
-        #     ptr.set_object obj
-        #   end
-        #   obj
-        # end
-
         def bind_string(stmt, index, value)
           case value.encoding
           when Encoding.utf_8, Encoding.us_ascii
@@ -138,7 +78,6 @@ module SQLite3
 
         api_delegate :column_name
         api_delegate :column_decltype
-        # api_delegate :aggregate_count
         api_delegate :bind_double
         api_delegate :bind_int
         api_delegate :bind_int64
@@ -148,29 +87,16 @@ module SQLite3
         api_delegate :busy_timeout
         api_delegate :changes
         api_delegate :close
-        # api_delegate :column_bytes
-        # api_delegate :column_bytes16
         api_delegate :column_count
         api_delegate :column_double
-        # api_delegate :column_int
         api_delegate :column_int64
         api_delegate :column_type
         api_delegate :data_count
         api_delegate :errcode
         api_delegate :finalize
-        # api_delegate :interrupt
         api_delegate :last_insert_rowid
         api_delegate :libversion
-        # api_delegate :reset
-        # api_delegate :result_error
         api_delegate :step
-        # api_delegate :total_changes
-        # api_delegate :value_bytes
-        # api_delegate :value_bytes16
-        # api_delegate :value_double
-        # api_delegate :value_int
-        # api_delegate :value_int64
-        # api_delegate :value_type
 
         private
 

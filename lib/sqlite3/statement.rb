@@ -198,9 +198,6 @@ module SQLite3
         @columns << @driver.column_name(@handle, column)
         @types << @driver.column_decltype(@handle, column)
       end
-
-      @columns.freeze
-      @types.freeze
     end
     private :get_metadata
 

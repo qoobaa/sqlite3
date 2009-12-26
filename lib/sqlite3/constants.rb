@@ -1,14 +1,6 @@
 module SQLite3
   module Constants
 
-    # module TextRep
-    #   UTF8    = 1
-    #   UTF16LE = 2
-    #   UTF16BE = 3
-    #   UTF16   = 4
-    #   ANY     = 5
-    # end
-
     module ColumnType
       INTEGER = 1
       FLOAT   = 2

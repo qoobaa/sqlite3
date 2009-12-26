@@ -41,17 +41,18 @@ module SQLite3
   class RangeException < Exception; end
   class NotADatabaseException < Exception; end
 
-  EXCEPTIONS = [
-                nil,
-                SQLException, InternalException, PermissionException,
-                AbortException, BusyException, LockedException, MemoryException,
-                ReadOnlyException, InterruptException, IOException, CorruptException,
-                NotFoundException, FullException, CantOpenException, ProtocolException,
-                EmptyException, SchemaChangedException, TooBigException,
-                ConstraintException, MismatchException, MisuseException,
-                UnsupportedException, AuthorizationException, FormatException,
-                RangeException, NotADatabaseException
-               ].each_with_index { |e,i| e.instance_variable_set( :@code, i ) if e }
+  EXCEPTIONS =
+    [
+     nil, SQLException, InternalException,
+     PermissionException, AbortException, BusyException,
+     LockedException, MemoryException, ReadOnlyException,
+     InterruptException, IOException, CorruptException,
+     NotFoundException, FullException, CantOpenException,
+     ProtocolException, EmptyException, SchemaChangedException,
+     TooBigException, ConstraintException, MismatchException,
+     MisuseException, UnsupportedException, AuthorizationException,
+     FormatException, RangeException, NotADatabaseException
+    ].each_with_index { |e,i| e.instance_variable_set(:@code, i ) if e }
 
   module Error
     def check( result, db=nil, msg=nil )
