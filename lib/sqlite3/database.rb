@@ -53,10 +53,6 @@ module SQLite3
     # as hashes or not. By default, rows are returned as arrays.
     attr_accessor :results_as_hash
 
-    # A boolean indicating whether or not type translation is enabled for this
-    # database.
-    # attr_accessor :type_translation
-
     # Encoding used to comunicate with database.
     attr_reader :encoding
 
