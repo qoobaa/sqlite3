@@ -109,4 +109,41 @@ class TestActiveRecord < Test::Unit::TestCase
     assert_equal "alice", user.login
     assert_equal "bob", user.login_was
   end
+
+  def test_transaction_commit
+    User.transaction do
+      User.create!
+    end
+    assert_equal 1, User.count
+  end
+
+  def test_transaction_rollback
+    User.transaction do
+      User.create!
+      raise ActiveRecord::Rollback
+    end
+    assert_equal 0, User.count
+  end
+
+  def test_reload
+    User.create!(:login => "bob")
+    user = User.first
+    assert_equal "bob", user.login
+    user.login = "alice"
+    assert_equal "alice", user.login
+    user.reload
+    assert_equal "bob", user.login
+  end
+
+  def test_save
+    user = User.new(:login => "alice")
+    user.save
+    assert_equal 1, User.count
+  end
+
+  def test_save_with_bang
+    user = User.new(:login => "alice")
+    user.save!
+    assert_equal 1, User.count
+  end
 end
