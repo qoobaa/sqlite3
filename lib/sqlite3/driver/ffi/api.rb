@@ -5,7 +5,6 @@ module SQLite3
       module API
         extend ::FFI::Library
 
-        # TODO: cleanup
         ffi_lib "libsqlite3.dylib", "libsqlite3.so" "sqlite3.dll"
 
         attach_function :sqlite3_libversion, [], :string
