@@ -71,26 +71,26 @@ module SQLite3
       define_method(name) { |*args| API.send("sqlite3_#{name}", *args) }
     end
 
-    api_delegate :column_name
-    api_delegate :column_decltype
     api_delegate :bind_double
     api_delegate :bind_int
     api_delegate :bind_int64
     api_delegate :bind_null
     api_delegate :bind_parameter_index
-    api_delegate :bind_parameter_name
     api_delegate :busy_timeout
     api_delegate :changes
     api_delegate :close
     api_delegate :column_count
+    api_delegate :column_decltype
     api_delegate :column_double
     api_delegate :column_int64
+    api_delegate :column_name
     api_delegate :column_type
     api_delegate :data_count
     api_delegate :errcode
     api_delegate :finalize
     api_delegate :last_insert_rowid
     api_delegate :libversion
+    api_delegate :reset
     api_delegate :step
 
     private

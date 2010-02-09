@@ -52,7 +52,7 @@ class TestActiveRecord < Test::Unit::TestCase
 
   def test_user_create
     login = "bob"
-    avatar = open("test/fixtures/SQLite.gif", "rb").read
+    avatar = open(fixture("SQLite.gif"), "rb").read
     login_count = 0
     ranking = 1.0
     active = true
@@ -142,6 +142,17 @@ class TestActiveRecord < Test::Unit::TestCase
   def test_save_with_bang
     user = User.new(:login => "alice")
     user.save!
+    assert_equal 1, User.count
+  end
+
+  def test_attribute_assignment
+    user = User.new
+    avatar = open(fixture("SQLite.gif"), "rb").read
+    user.avatar = avatar
+    user.avatar = nil
+    user.save!
+    user.avatar = avatar
+    user.reload
     assert_equal 1, User.count
   end
 end
