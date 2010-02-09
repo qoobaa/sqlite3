@@ -2,7 +2,9 @@ module SQLite3
   module API
     extend FFI::Library
 
-    ffi_lib ["libsqlite3.dylib", "libsqlite3.so", "sqlite3.dll"]
+    lib_paths = Array(ENV["SQLITE3_LIB"] || Dir["/{opt,usr}/{,local/}lib{,64}/libsqlite3.{dylib,so*}"])
+    fallback_names = ["libsqlite3", "sqlite3"]
+    ffi_lib(lib_paths + fallback_names)
 
     attach_function :sqlite3_bind_blob, [:pointer, :int, :pointer, :int, :pointer], :int
     attach_function :sqlite3_bind_double, [:pointer, :int, :double], :int
