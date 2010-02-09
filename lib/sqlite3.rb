@@ -1,5 +1,7 @@
 require "ffi"
 
+require "sqlite3/api"
+require "sqlite3/driver"
 require "sqlite3/constants"
 require "sqlite3/errors"
 require "sqlite3/pragmas"

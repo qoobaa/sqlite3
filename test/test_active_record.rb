@@ -21,9 +21,7 @@ class CreateUsers < ActiveRecord::Migration
   end
 end
 
-class User < ActiveRecord::Base
-
-end
+class User < ActiveRecord::Base; end
 
 class TestActiveRecord < Test::Unit::TestCase
   def setup

@@ -64,7 +64,7 @@ module SQLite3
     def initialize(file_name, options = {})
       @encoding = Encoding.find(options.fetch(:encoding, "utf-8"))
 
-      load_driver(options[:driver])
+      @driver = Driver.new
 
       @statement_factory = options[:statement_factory] || Statement
 
@@ -275,34 +275,5 @@ module SQLite3
     def transaction_active?
       @transaction_active
     end
-
-    private
-
-    # Loads the corresponding driver, or if it is nil, attempts to locate a
-    # suitable driver.
-    def load_driver(driver)
-      case driver
-      when Class
-        # do nothing--use what was given
-      when Symbol, String
-        require "sqlite3/driver/#{driver.to_s.downcase}/driver"
-        driver = SQLite3::Driver.const_get(driver)::Driver
-      else
-        ["FFI"].each do |d|
-          begin
-            require "sqlite3/driver/#{d.downcase}/driver"
-            driver = SQLite3::Driver.const_get(d)::Driver
-            break
-          rescue SyntaxError
-            raise
-          rescue ScriptError, Exception, NameError
-          end
-        end
-        raise "no driver for sqlite3 found" unless driver
-      end
-
-      @driver = driver.new
-    end
-
   end
 end
