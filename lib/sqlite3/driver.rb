@@ -67,6 +67,19 @@ module SQLite3
       end
     end
 
+    def extension_support?
+      API::EXTENSION_SUPPORT
+    end
+
+    def load_extension(db, name, entry_point = nil)
+      result = API.sqlite3_load_extension(db, name, entry_point, nil)
+      [result, nil]
+    end
+
+    def enable_load_extension(db, onoff = false)
+      API.sqlite3_enable_load_extension(db, (onoff ? 1 : 0))
+    end
+
     def self.api_delegate(name)
       define_method(name) { |*args| API.send("sqlite3_#{name}", *args) }
     end
