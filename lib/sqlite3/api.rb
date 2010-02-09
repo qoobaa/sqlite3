@@ -40,5 +40,13 @@ module SQLite3
     attach_function :sqlite3_prepare, [:pointer, :string, :int, :pointer, :pointer], :int
     attach_function :sqlite3_reset, [:pointer], :int
     attach_function :sqlite3_step, [:pointer], :int
+
+    begin
+      attach_function :sqlite3_enable_load_extension, [:pointer, :int], :int
+      attach_function :sqlite3_load_extension, [:pointer, :string, :string, :string], :int
+      EXTENSION_SUPPORT = true
+    rescue FFI::NotFoundError
+      EXTENSION_SUPPORT = false
+    end
   end
 end
