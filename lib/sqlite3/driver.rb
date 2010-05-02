@@ -5,10 +5,10 @@ module SQLite3
     def open(filename, utf_16 = false)
       handle = FFI::MemoryPointer.new(:pointer)
       if utf_16
-        filename = filename.encode(Encoding.utf_16native)
+        filename = filename.encode(Encoding.utf_16native) if filename.respond_to?(:encode)
         result = API.sqlite3_open16(c_string(filename), handle)
       else
-        filename = filename.encode(Encoding.utf_8)
+        filename = filename.encode(Encoding.utf_8) if filename.respond_to?(:encode)
         result = API.sqlite3_open(filename, handle)
       end
       [result, handle.get_pointer(0)]
@@ -17,9 +17,13 @@ module SQLite3
     def errmsg(db, utf_16 = false)
       if utf_16
         ptr = API.sqlite3_errmsg16(db)
-        get_string_utf_16(ptr).force_encoding(Encoding.utf_16native)
+        result = get_string_utf_16(ptr)
+        result.force_encoding(Encoding.utf_16native) if result.respond_to?(:force_encoding)
+        result
       else
-        API.sqlite3_errmsg(db).force_encoding(Encoding.utf_8)
+        result = API.sqlite3_errmsg(db)
+        result.force_encoding(Encoding.utf_8) if result.respond_to?(:force_encoding)
+        result
       end
     end
 
